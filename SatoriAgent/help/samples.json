@@ -1,0 +1,33 @@
+{
+  "emailIdsToSend" : {
+    "toEmailIds"  : ["arunraj.mony@gmail.com,arunswaraj@gmail.com"],
+    "ccEmailIds"  : [],
+    "bccEmailIds"  : []
+  },
+  "messageDetails" : {
+    "textMessage" : "this is alternate text message",
+    "htmlMessage" :  "<b> This is the html message</b> <br> <h2> this is h2 </h2>",
+    "subjectLine" : "This is the subject line of the email"
+
+  }
+}
+
+attachments
+
+{
+  "emailIdsToSend" : {
+    "toEmailIds"  : ["arunraj.mony@gmail.com,arunswaraj@gmail.com"]
+  },
+  "messageDetails" : {
+    "textMessage" : "this is alternate text message",
+    "htmlMessage" :  "<b> This is the html message</b> <br> <h2> this is h2 </h2>",
+    "subjectLine" : "This is the subject line of the email",
+    "attachments" : {
+      "urls" : [
+        "https://s3-ap-southeast-1.amazonaws.com/spini-admin-panel-download-files/staging/user/5-APR-2016/PaytmGratification_a6883942-c5c7-4cb9-a63c-a0df50ec1a1a_5-APR-20165439334738978559608.csv",
+        "https://s3-ap-southeast-1.amazonaws.com/spini-admin-panel-download-files/staging/user/5-APR-2016/phone_numbers_51171f52-3611-42cc-b514-4409ae9405c9_5-APR-20161614341218177907965.txt"
+      ]
+    }
+
+  }
+}

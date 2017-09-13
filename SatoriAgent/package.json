@@ -1,0 +1,30 @@
+{
+  "name": "xxxxx",
+  "version": "1.0.0",
+  "description": "A nodejs application to xxxxxx",
+  "main": "index.js",
+  "dependencies": {
+    "avsc": "^5.0.5",
+    "deepcopy": "^0.6.3",
+    "kafka-node": "^2.2.2",
+    "log4js": "^2.3.3",
+    "restler": "^3.4.0",
+    "satori-rtm-sdk": "^1.1.0",
+    "string": "^3.3.3",
+    "uuid": "^3.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xxxx"
+  },
+  "keywords": [
+    "nodejs",
+    "template"
+  ],
+  "author": "Arun Raj Mony",
+  "license": "ISC"
+}

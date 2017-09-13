@@ -1,0 +1,38 @@
+[
+
+		{
+			"environment" : "dev",
+			"config" : {
+				"log4j" : {
+					"log4jsConfigurationFile" : "conf/log4js.json",
+					"reLoadSecs" : 300
+				},
+				"satori" : {
+					"rtm" : {
+						"appkey" : "5f0F35aD1b9aa610b59A99CD65AFC5a1",
+						"endpoint" : "wss://open-data.api.satori.com"
+
+					}
+				},
+				"categoryDetails" : {
+					"primaryCategories" : ["Hillary Clinton","Donald Trump","Republican Party","Democratic Party","United States Senate","United States House of Representatives","Drones","Smartphones","Autonomous Vehicles","Cloud Computing","Wearables","Internet of Things"]
+				}
+			}
+
+		},
+
+		{
+
+			"environment" : "production",
+
+			"config" : {
+				"log4j" : {
+					"log4jsConfigurationFile" : "/home/ec2-user/applications/EmailNodeJS/conf/log4js.json",
+					"reLoadSecs" : 300
+				}
+			}
+
+
+		}
+
+]

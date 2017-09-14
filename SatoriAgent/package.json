@@ -1,7 +1,7 @@
 {
-  "name": "xxxxx",
-  "version": "1.0.0",
-  "description": "A nodejs application to xxxxxx",
+  "name": "ChatterpulseSatoriAgent",
+  "version": "0.5.0",
+  "description": "A nodejs application to connect with Satori RTM's big-rss channel",
   "main": "index.js",
   "dependencies": {
     "avsc": "^5.0.5",

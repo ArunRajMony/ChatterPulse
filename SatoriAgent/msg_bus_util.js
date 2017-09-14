@@ -4,11 +4,12 @@ const configsUtil = require("./configs_util.js");
 
 
 const log = configsUtil.getLogger();
+const config = configsUtil.getConfig();
 
 var HighLevelProducer = kafka.HighLevelProducer;
 var Client = kafka.Client;
 
-var client = new Client('localhost:2181', 'satori-node-client', {
+var client = new Client(config.kafka.brokerHostPort, config.kafka.clientName, {
   sessionTimeout: 300,
   spinDelay: 100,
   retries: 2
@@ -48,7 +49,7 @@ module.exports.sendMessage = function(msg){
   //log.debug("msg : " + JSON.stringify(msg));
 
 	var payload = [{
-	    topic: 'node-test', 
+	    topic: config.kafka.topicName, 
     	messages: JSON.stringify(msg),
     	attributes: 1 /* Use GZip compression for the payload */
   	}];

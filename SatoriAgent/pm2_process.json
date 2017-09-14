@@ -3,6 +3,7 @@
     "name"        : "SatoriAgent",
     "script"      : "./index.js",
     "watch"       : true,
+    "ignore_watch" : ["logs"],
     "env": {
       "NODE_ENV": "development"
     },

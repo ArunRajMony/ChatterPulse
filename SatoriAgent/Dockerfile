@@ -21,4 +21,4 @@ RUN npm install pm2 -g
 #CMD [ "npm", "start" ]
 
 # for pm2 based run
-CMD ["pm2-docker","index.js"]
+CMD [ "pm2-docker" , "pm2_process.json" ]

@@ -21,4 +21,5 @@ RUN npm install pm2 -g
 #CMD [ "npm", "start" ]
 
 # for pm2 based run
-CMD [ "pm2-docker" , "--env", "production" , "--web"  ,"pm2_process.json" ]
+#CMD [ "pm2-docker" , "pm2_process.json" ]
+CMD [ "pm2-docker" , "--env", "production"  ,"pm2_process.json" , "--web"]

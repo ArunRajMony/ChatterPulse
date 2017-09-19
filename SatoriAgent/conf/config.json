@@ -21,6 +21,10 @@
 					"brokerHostPort" : "192.168.2.11:2181",
 					"topicName"  : "node-test",
 					"clientName" : "satori-node-client"
+				},
+				"zookeeper" : {
+					"zkHostsPortsConnectionString" : "192.168.2.11:2181",
+					"pathOfzNodeHavingCategoryList" : "/satori/agent/primaryCategories"
 				}
 			}
 

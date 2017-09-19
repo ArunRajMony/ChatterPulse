@@ -1,5 +1,6 @@
 const fs = require('fs');
 const log4js = require('log4js'); // https://github.com/nomiddlename/log4js-node
+const zookeeper = require('node-zookeeper-client');
 
 
 
@@ -13,7 +14,7 @@ if(p_environment == null){
 var config = getConfigForCurrentEnvironment();
 console.log("\n\tconfig : " + JSON.stringify(config) + "\n\n");
 
-
+var primaryCategoriesList = [];
 //const log4jconfig = JSON.parse(fs.readFileSync(config.log4j.log4jsConfigurationFile, {encoding : 'utf8'}));
 
 //for log4js layouts see https://nomiddlename.github.io/log4js-node/layouts.html  
@@ -52,6 +53,93 @@ var logDet = log4js.getLogger('detailed'); // no need to use this. one can play 
 
 
 
+
+
+//Zoo keeper {
+var zkClient = zookeeper.createClient(config.zookeeper.zkHostsPortsConnectionString);
+const zNodeWithCategoryListPath = config.zookeeper.pathOfzNodeHavingCategoryList;
+log.info("zNodeWithCategoryListPath : ${zNodeWithCategoryListPath}");
+
+zkClient.once('connected', function () {
+    log.info('Connected to the zookeeper server.');
+
+    //check if znode for category details exist, if not create it
+	zkClient.exists(zNodeWithCategoryListPath, zNodeModified, function (error, stat) {
+	    if (error) {
+	        log.error("znode exists check returned error for zNode '${zNodeWithCategoryListPath}' : ${error.stack}");
+	        return;
+	    }
+
+	    if (stat) {
+	        log.info('zNode ${zNodeWithCategoryListPath} exists already with stat : ${stat}');
+	    } else {
+	        log.info('zNode ${zNodeWithCategoryListPath} does not exist, so going to create with watch');
+
+	        zkClient.create(zNodeWithCategoryListPath, function (error) {
+	        	if (error) {
+	            	log.error('Failed to create node: %s due to: %s.', zNodeWithCategoryListPath, error);
+	            	return;
+	        	} else {
+	            	log.info('Node: %s is successfully created.', zNodeWithCategoryListPath);
+	        	}
+    		});
+	    }
+
+	});
+
+});
+
+zkClient.connect();
+
+
+
+
+
+
+function zNodeModified(event){
+	log.info("Received zNode modified event : %s ",event);
+	if(event.getType() == NODE_DATA_CHANGED && event.getPath() == zNodeWithCategoryListPath){
+		getzNodeData(zNodeWithCategoryListPath);		
+	}
+}
+
+
+function getzNodeData(zNodePath){
+	zookeeper.getData(
+	    zNodePath,
+	    zNodeModified,
+	    function (error, data, stat) {
+	        if (error) {
+	            log.error("Error while trying to get data from zNode '${zNodePath}' : ${error.stack}");
+	            return;
+	        }
+
+	        log.info('Got data: %s', data.toString('utf8'));
+
+	        if(zNodePath == zNodeWithCategoryListPath){
+	        	var dataStr = data.toString('utf8');
+	        	//split by comma and add it to array 
+	        	primaryCategoriesList = [];
+
+	        	myStringWithCommas.split(/\s*,\s*/).forEach(function(catName) {
+    				primaryCategoriesList.push(catName);
+				});
+
+				log.info("updated primaryCategoriesList : " + primaryCategoriesList.toString());
+	        }
+
+	        
+	    }
+	);
+}
+
+
+// end of Zookeeper }
+
+
+
+
+
 function getConfigForCurrentEnvironment(){
 	var config_file_path = "/xxxxxx/config.json";
 	if(p_environment == "dev")
@@ -78,3 +166,29 @@ module.exports.getLogger = function(){
 module.exports.getConfig = function(){
 	return config;
 };
+
+module.exports.getPrimaryCategoriesList = function(){
+    return primaryCategoriesList;
+};
+
+
+
+
+const http = require('http')  
+const port = 3000
+
+const requestHandler = (request, response) => {  
+  console.log(request.url)
+  response.end('Hello Node.js Server!')
+}
+
+const server = http.createServer(requestHandler)
+
+server.listen(port, (err) => {  
+  if (err) {
+    return console.log('something bad happened', err)
+  }
+
+  console.log(`server is listening on ${port}`)
+})
+

@@ -8,6 +8,7 @@
     "deepcopy": "^0.6.3",
     "kafka-node": "^2.2.2",
     "log4js": "^2.3.3",
+    "node-zookeeper-client": "^0.2.2",
     "restler": "^3.4.0",
     "satori-rtm-sdk": "^1.1.0",
     "string": "^3.3.3",
@@ -15,7 +16,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start" : "node index.js"
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",

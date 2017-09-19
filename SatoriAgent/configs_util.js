@@ -14,6 +14,7 @@ if(p_environment == null){
 var config = getConfigForCurrentEnvironment();
 console.log("\n\tconfig : " + JSON.stringify(config) + "\n\n");
 
+var primaryCategoriesStr;
 var primaryCategoriesList = [];
 //const log4jconfig = JSON.parse(fs.readFileSync(config.log4j.log4jsConfigurationFile, {encoding : 'utf8'}));
 
@@ -61,8 +62,11 @@ var zkClient = zookeeper.createClient(config.zookeeper.zkHostsPortsConnectionStr
 const zNodeWithCategoryListPath = config.zookeeper.pathOfzNodeHavingCategoryList;
 log.info("zNodeWithCategoryListPath : %s ", zNodeWithCategoryListPath);
 
+var zkClientConnected = false;
+
 zkClient.once('connected', function () {
     log.info('Connected to the zookeeper server.');
+    zkClientConnected = true;
 
     //check if znode for category details exist, if not create it
 	zkClient.exists(zNodeWithCategoryListPath, zNodeModified, function (error, stat) {
@@ -121,8 +125,17 @@ function processUpdatedzNodeData(zNodePath){
 
 	        if(zNodePath == zNodeWithCategoryListPath){
 	        	var dataStr = data.toString('utf8');
-	        	//update file which has the categories list 
-	        	fs.writeFileSync(config.categoryDetails.categoryListFileLocation, dataStr,{encoding : 'utf8'});
+
+	        	if(primaryCategoriesStr != dataStr){
+		        	//update file which has the categories list 
+		        	log.info("Category list has been modified, so writing the new list to file '%s'", config.categoryDetails.categoryListFileLocation);
+		        	fs.writeFileSync(config.categoryDetails.categoryListFileLocation, dataStr,{encoding : 'utf8'});
+	        	}else {
+
+	        		log.info("Category list in zookeeper is same as the one locally, so not updating '%s'",config.categoryDetails.categoryListFileLocation);
+
+	        	}
+
 
 	        }
 	        
@@ -166,15 +179,26 @@ module.exports.getConfig = function(){
 
 module.exports.getPrimaryCategoriesList = function(){
 
-	var primaryCategoriesStr = fs.readFileSync(config.categoryDetails.categoryListFileLocation, {encoding : 'utf8'});
-
 	primaryCategoriesList = [];
 
-	primaryCategoriesStr.split(/\s*,\s*/).forEach(function(catName) {
-    	primaryCategoriesList.push(catName);
-	});
+	if(fs.existsSync(config.categoryDetails.categoryListFileLocation)){
 
-    return primaryCategoriesList;
+		log.info("File exists at %s ", config.categoryDetails.categoryListFileLocation)
+
+		primaryCategoriesStr = fs.readFileSync(config.categoryDetails.categoryListFileLocation, {encoding : 'utf8'});
+
+		primaryCategoriesStr.split(/\s*,\s*/).forEach(function(catName) {
+	    	primaryCategoriesList.push(catName);
+		});
+
+	}else {
+		log.info("File '%s' does not exist, so calling the function to get the data from zookeeper and write to this file " ,config.categoryDetails.categoryListFileLocation )
+	}
+
+	processUpdatedzNodeData(zNodeWithCategoryListPath);
+	return primaryCategoriesList; 
+
+
 };
 
 

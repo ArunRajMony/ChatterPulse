@@ -56,9 +56,10 @@ var logDet = log4js.getLogger('detailed'); // no need to use this. one can play 
 
 
 //Zoo keeper {
-var zkClient = zookeeper.createClient(config.zookeeper.zkHostsPortsConnectionString);
+var zkClient = zookeeper.createClient(config.zookeeper.zkHostsPortsConnectionString, { retries : 2 });
+
 const zNodeWithCategoryListPath = config.zookeeper.pathOfzNodeHavingCategoryList;
-log.info("zNodeWithCategoryListPath : ${zNodeWithCategoryListPath}");
+log.info("zNodeWithCategoryListPath : %s ", zNodeWithCategoryListPath);
 
 zkClient.once('connected', function () {
     log.info('Connected to the zookeeper server.');
@@ -66,21 +67,22 @@ zkClient.once('connected', function () {
     //check if znode for category details exist, if not create it
 	zkClient.exists(zNodeWithCategoryListPath, zNodeModified, function (error, stat) {
 	    if (error) {
-	        log.error("znode exists check returned error for zNode '${zNodeWithCategoryListPath}' : ${error.stack}");
+	        log.error("'znode exists' check returned error for zNode '%s' : %s " ,zNodeWithCategoryListPath , error.stack);
 	        return;
 	    }
 
 	    if (stat) {
-	        log.info('zNode ${zNodeWithCategoryListPath} exists already with stat : ${stat}');
+	        log.info('zNode %s exists already with stat : %s', zNodeWithCategoryListPath,stat);
+	        //TODO update the catlist.txt file here 
 	    } else {
-	        log.info('zNode ${zNodeWithCategoryListPath} does not exist, so going to create with watch');
+	        log.info('zNode \'%s\' does not exist, so going to create.',zNodeWithCategoryListPath);
 
-	        zkClient.create(zNodeWithCategoryListPath, function (error) {
+	        zkClient.create(zNodeWithCategoryListPath, function (error) { // this create is throwing back an error, so better to creaate the znode using zookeper CLI before running this program
 	        	if (error) {
-	            	log.error('Failed to create node: %s due to: %s.', zNodeWithCategoryListPath, JSON.stringify(error));
+	            	log.error('Failed to create zNode \'%s\' due to: %s.', zNodeWithCategoryListPath, JSON.stringify(error));
 	            	return;
 	        	} else {
-	            	log.info('Node: %s is successfully created.', zNodeWithCategoryListPath);
+	            	log.info('zNode: \'%s\' is successfully created.', zNodeWithCategoryListPath);
 	        	}
     		});
 	    }
@@ -97,20 +99,21 @@ zkClient.connect();
 
 
 function zNodeModified(event){
-	log.info("Received zNode modified event : %s ",event);
-	if(event.getType() == NODE_DATA_CHANGED && event.getPath() == zNodeWithCategoryListPath){
+	log.info("Received zNode modified event : %s " , event.toString());
+	//if(event.getType() == zookeeper.NODE_DATA_CHANGED && event.getPath() == zNodeWithCategoryListPath){
+		log.info("category list needs to be updated");
 		processUpdatedzNodeData(zNodeWithCategoryListPath);		
-	}
+	//}
 }
 
 
 function processUpdatedzNodeData(zNodePath){
-	zookeeper.getData(
+	zkClient.getData(
 	    zNodePath,
 	    zNodeModified,
 	    function (error, data, stat) {
 	        if (error) {
-	            log.error("Error while trying to get data from zNode '${zNodePath}' : ${error.stack}");
+	            log.error("Error while trying to get data from zNode '%s' : %s" , zNodePath , error.stack);
 	            return;
 	        }
 

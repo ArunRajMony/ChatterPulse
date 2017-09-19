@@ -4,7 +4,7 @@ const zookeeper = require('node-zookeeper-client');
 
 
 
-var p_environment="dev" // "production"
+var p_environment= process.env.NODE_ENV || "dev" // "production"
 console.log("current environment : " + p_environment);
 if(p_environment == null){
 	console.log("please set environment name. valid Values are 'dev' , 'production'");
@@ -26,7 +26,7 @@ log4js.configure({
   appenders: {
     rolling_file: { type: 'file', filename: 'logs/log4j.log' , maxLogSize: 10485760, backups: 10, compress: true, layout: {
       type: 'pattern',
-      pattern: '%d %p %z [req_id=%X{request_id}] %m%n'
+      pattern: '%d %[%p%] %z [req_id=%X{request_id}] %m%n'
     }},
 
     console: { type: 'stdout', layout: {
@@ -151,15 +151,12 @@ function processUpdatedzNodeData(zNodePath){
 
 
 function getConfigForCurrentEnvironment(){
-	var config_file_path = "/xxxxxx/config.json";
-	if(p_environment == "dev")
-		config_file_path = "conf/config.json";
-
+	var config_file_path = "conf/config.json";
 
 	var configWholeObj =  JSON.parse(fs.readFileSync(config_file_path, {encoding : 'utf8'}));
 	var config;
 	configWholeObj.forEach(function(val, index, array) {
-		if( val.environment === p_environment ){
+		if( val.environment == p_environment ){
 			config = val.config;    //Note: There is no way to stop or break a forEach() loop. The solution is to use Array.prototype.every() or Array.prototype.some(). See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach
 		}
 	});

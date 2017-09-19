@@ -2,7 +2,10 @@
  * MailEngine
  */
 
- console.log('NodeJS app\'s process\'s pid ' + process.pid);
+console.log('NodeJS app\'s process\'s pid ' + process.pid);
+var p_environment= process.env.NODE_ENV || "dev" // "production"
+console.log("current environment : " + p_environment);
+
 
 const restler = require('restler');	    // https://www.npmjs.com/package/restler
 const RTM = require("satori-rtm-sdk");
@@ -12,6 +15,7 @@ const uuidv1 = require('uuid/v1');
 
 const kafkaUtil = require("./msg_bus_util.js");
 const configsUtil = require("./configs_util.js");
+
 
 
 

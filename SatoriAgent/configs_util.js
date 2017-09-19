@@ -185,17 +185,17 @@ const http = require('http')
 const port = 3000
 
 const requestHandler = (request, response) => {  
-  console.log(request.url)
-  response.end('Hello Node.js Server!')
+  log.info(request.url)
+  response.end('Hello from Node.js Server!')
 }
 
 const server = http.createServer(requestHandler)
 
 server.listen(port, (err) => {  
   if (err) {
-    return console.log('something bad happened', err)
+    return log.error('something bad happened while starting http server', err)
   }
 
-  console.log(`server is listening on ${port}`)
+  log.info('server is listening on %s' , port)
 })
 

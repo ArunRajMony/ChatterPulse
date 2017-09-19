@@ -1,0 +1,32 @@
+
+starting kafka 
+
+
+
+
+writing to a topic via cli
+
+bin/kafka-console-producer.sh --broker-list localhost:9092 --topic node-testter
+
+
+
+
+
+
+
+reading from a topic
+
+bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic node-test --from-beginning
+
+
+
+
+ starting zookeeper server
+ bin/zkServer.sh start conf/zoo_sample.cfg
+
+bin/zkCli.sh
+
+
+
+52.74.113.89
+

@@ -15,7 +15,8 @@
 					}
 				},
 				"categoryDetails" : {
-					"primaryCategories" : ["Hillary Clinton","Donald Trump","Republican Party","Democratic Party","United States Senate","United States House of Representatives","Drones","Smartphones","Autonomous Vehicles","Cloud Computing","Wearables","Internet of Things"]
+					"primaryCategories" : ["Hillary Clinton","Donald Trump","Republican Party","Democratic Party","United States Senate","United States House of Representatives","Drones","Smartphones","Autonomous Vehicles","Cloud Computing","Wearables","Internet of Things"],
+					"categoryListFileLocation" : "conf/catlist.txt"
 				},
 				"kafka" : {
 					"brokerHostPort" : "192.168.2.11:2181",

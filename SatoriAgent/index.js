@@ -30,9 +30,11 @@ var filterQuery = "";
 
 var buildQuery = function(){
 	var queryCondition = ""
-	for(var i in config.categoryDetails.primaryCategories){
-		queryCondition += " description like '%" + config.categoryDetails.primaryCategories[i] + "%'";
-		if(i < (config.categoryDetails.primaryCategories.length - 1))
+
+	var catList = configsUtil.getPrimaryCategoriesList();
+	for(var i in catList){
+		queryCondition += " description like '%" + catList[i] + "%'";
+		if(i < (catList.length - 1))
 			queryCondition += " OR ";
 	}
 	log.debug("derived valued for queryCondition : " + queryCondition);

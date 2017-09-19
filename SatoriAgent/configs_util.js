@@ -77,7 +77,7 @@ zkClient.once('connected', function () {
 
 	        zkClient.create(zNodeWithCategoryListPath, function (error) {
 	        	if (error) {
-	            	log.error('Failed to create node: %s due to: %s.', zNodeWithCategoryListPath, error);
+	            	log.error('Failed to create node: %s due to: %s.', zNodeWithCategoryListPath, JSON.stringify(error));
 	            	return;
 	        	} else {
 	            	log.info('Node: %s is successfully created.', zNodeWithCategoryListPath);
@@ -99,12 +99,12 @@ zkClient.connect();
 function zNodeModified(event){
 	log.info("Received zNode modified event : %s ",event);
 	if(event.getType() == NODE_DATA_CHANGED && event.getPath() == zNodeWithCategoryListPath){
-		getzNodeData(zNodeWithCategoryListPath);		
+		processUpdatedzNodeData(zNodeWithCategoryListPath);		
 	}
 }
 
 
-function getzNodeData(zNodePath){
+function processUpdatedzNodeData(zNodePath){
 	zookeeper.getData(
 	    zNodePath,
 	    zNodeModified,
@@ -118,16 +118,10 @@ function getzNodeData(zNodePath){
 
 	        if(zNodePath == zNodeWithCategoryListPath){
 	        	var dataStr = data.toString('utf8');
-	        	//split by comma and add it to array 
-	        	primaryCategoriesList = [];
+	        	//update file which has the categories list 
+	        	fs.writeFileSync(config.categoryDetails.categoryListFileLocation, dataStr,{encoding : 'utf8'});
 
-	        	myStringWithCommas.split(/\s*,\s*/).forEach(function(catName) {
-    				primaryCategoriesList.push(catName);
-				});
-
-				log.info("updated primaryCategoriesList : " + primaryCategoriesList.toString());
 	        }
-
 	        
 	    }
 	);
@@ -168,8 +162,18 @@ module.exports.getConfig = function(){
 };
 
 module.exports.getPrimaryCategoriesList = function(){
+
+	var primaryCategoriesStr = fs.readFileSync(config.categoryDetails.categoryListFileLocation, {encoding : 'utf8'});
+
+	primaryCategoriesList = [];
+
+	primaryCategoriesStr.split(/\s*,\s*/).forEach(function(catName) {
+    	primaryCategoriesList.push(catName);
+	});
+
     return primaryCategoriesList;
 };
+
 
 
 
